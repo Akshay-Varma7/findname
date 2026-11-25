@@ -1,0 +1,251 @@
+[
+  {
+    "id": "table.SharedHabbit",
+    "label": "Create table \"SharedHabbit\"",
+    "summary": "Creates table \"SharedHabbit\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "SharedHabbit"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"SharedHabbit\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"SharedHabbit\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "table \"SharedHabbit\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"SharedHabbit\"",
+        "sql": "CREATE TABLE \"public\".\"SharedHabbit\" (\n  \"create_at\" timestamptz(3) DEFAULT (now()) NOT NULL,\n  \"habbit_id\" int4 NOT NULL,\n  \"id\" SERIAL NOT NULL,\n  \"url\" text NOT NULL,\n  \"user_id\" int4 NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"SharedHabbit\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_class\" AS \"c\" WHERE (\"c\".\"oid\" = to_regclass($1) AND (\"c\".\"relkind\" = $2 OR \"c\".\"relkind\" = $3))) AS \"result\"",
+        "params": [
+          "\"public\".\"SharedHabbit\"",
+          "r",
+          "p"
+        ],
+        "expectation": {
+          "expects": "present",
+          "object": "table \"SharedHabbit\""
+        }
+      }
+    ]
+  },
+  {
+    "id": "index.SharedHabbit.SharedHabbit_habbit_id_idx_05f1169b",
+    "label": "Create index \"SharedHabbit_habbit_id_idx_05f1169b\" on \"SharedHabbit\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "SharedHabbit_habbit_id_idx_05f1169b",
+        "table": "SharedHabbit"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"SharedHabbit_habbit_id_idx_05f1169b\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"SharedHabbit_habbit_id_idx_05f1169b\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "index \"SharedHabbit_habbit_id_idx_05f1169b\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"SharedHabbit_habbit_id_idx_05f1169b\"",
+        "sql": "CREATE INDEX \"SharedHabbit_habbit_id_idx_05f1169b\" ON \"public\".\"SharedHabbit\" (\"habbit_id\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"SharedHabbit_habbit_id_idx_05f1169b\" exists on \"SharedHabbit\" with the planned definition",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_class\" AS \"c\" INNER JOIN \"pg_index\" AS \"i\" ON \"i\".\"indexrelid\" = \"c\".\"oid\" INNER JOIN \"pg_am\" AS \"m\" ON \"m\".\"oid\" = \"c\".\"relam\" WHERE (\"c\".\"oid\" = to_regclass($1) AND (\"c\".\"relkind\" = $2 OR \"c\".\"relkind\" = $3) AND \"i\".\"indrelid\" = to_regclass($4) AND NOT (\"i\".\"indisunique\") AND \"m\".\"amname\" = $5 AND (\"i\".\"indexprs\" IS NULL AND (SELECT coalesce(jsonb_agg(key_attribute.attname ORDER BY key_column.position), '[]'::jsonb) FROM unnest(\"i\".\"indkey\"::int2[]) WITH ORDINALITY AS key_column(attnum, position) JOIN pg_attribute key_attribute ON key_attribute.attrelid = \"i\".\"indrelid\" AND key_attribute.attnum = key_column.attnum) = ($6)::jsonb) AND \"i\".\"indpred\" IS NULL)) AS \"result\"",
+        "params": [
+          "\"public\".\"SharedHabbit_habbit_id_idx_05f1169b\"",
+          "i",
+          "I",
+          "\"public\".\"SharedHabbit\"",
+          "btree",
+          "[\"habbit_id\"]"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.SharedHabbit.SharedHabbit_user_id_idx_6c952402",
+    "label": "Create index \"SharedHabbit_user_id_idx_6c952402\" on \"SharedHabbit\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "SharedHabbit_user_id_idx_6c952402",
+        "table": "SharedHabbit"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"SharedHabbit_user_id_idx_6c952402\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"SharedHabbit_user_id_idx_6c952402\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "index \"SharedHabbit_user_id_idx_6c952402\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"SharedHabbit_user_id_idx_6c952402\"",
+        "sql": "CREATE INDEX \"SharedHabbit_user_id_idx_6c952402\" ON \"public\".\"SharedHabbit\" (\"user_id\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"SharedHabbit_user_id_idx_6c952402\" exists on \"SharedHabbit\" with the planned definition",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_class\" AS \"c\" INNER JOIN \"pg_index\" AS \"i\" ON \"i\".\"indexrelid\" = \"c\".\"oid\" INNER JOIN \"pg_am\" AS \"m\" ON \"m\".\"oid\" = \"c\".\"relam\" WHERE (\"c\".\"oid\" = to_regclass($1) AND (\"c\".\"relkind\" = $2 OR \"c\".\"relkind\" = $3) AND \"i\".\"indrelid\" = to_regclass($4) AND NOT (\"i\".\"indisunique\") AND \"m\".\"amname\" = $5 AND (\"i\".\"indexprs\" IS NULL AND (SELECT coalesce(jsonb_agg(key_attribute.attname ORDER BY key_column.position), '[]'::jsonb) FROM unnest(\"i\".\"indkey\"::int2[]) WITH ORDINALITY AS key_column(attnum, position) JOIN pg_attribute key_attribute ON key_attribute.attrelid = \"i\".\"indrelid\" AND key_attribute.attnum = key_column.attnum) = ($6)::jsonb) AND \"i\".\"indpred\" IS NULL)) AS \"result\"",
+        "params": [
+          "\"public\".\"SharedHabbit_user_id_idx_6c952402\"",
+          "i",
+          "I",
+          "\"public\".\"SharedHabbit\"",
+          "btree",
+          "[\"user_id\"]"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.SharedHabbit.SharedHabbit_user_id_fkey",
+    "label": "Add foreign key \"SharedHabbit_user_id_fkey\" on \"SharedHabbit\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "SharedHabbit_user_id_fkey",
+        "table": "SharedHabbit"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"SharedHabbit_user_id_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "SharedHabbit_user_id_fkey",
+          "public",
+          "\"public\".\"SharedHabbit\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "FK \"SharedHabbit_user_id_fkey\" on \"SharedHabbit\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"SharedHabbit_user_id_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"SharedHabbit\"\nADD CONSTRAINT \"SharedHabbit_user_id_fkey\"\nFOREIGN KEY (\"user_id\")\nREFERENCES \"public\".\"User\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"SharedHabbit_user_id_fkey\" exists with the planned columns, referenced table and actions",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3) AND \"c\".\"contype\" = $4 AND (SELECT coalesce(jsonb_agg(key_attribute.attname ORDER BY key_column.position), '[]'::jsonb) FROM unnest(\"c\".\"conkey\"::int2[]) WITH ORDINALITY AS key_column(attnum, position) JOIN pg_attribute key_attribute ON key_attribute.attrelid = \"c\".\"conrelid\" AND key_attribute.attnum = key_column.attnum) = ($5)::jsonb AND \"c\".\"confrelid\" = to_regclass($6) AND (SELECT coalesce(jsonb_agg(key_attribute.attname ORDER BY key_column.position), '[]'::jsonb) FROM unnest(\"c\".\"confkey\"::int2[]) WITH ORDINALITY AS key_column(attnum, position) JOIN pg_attribute key_attribute ON key_attribute.attrelid = \"c\".\"confrelid\" AND key_attribute.attnum = key_column.attnum) = ($7)::jsonb AND \"c\".\"confdeltype\" = $8 AND \"c\".\"confupdtype\" = $9)) AS \"result\"",
+        "params": [
+          "SharedHabbit_user_id_fkey",
+          "public",
+          "\"public\".\"SharedHabbit\"",
+          "f",
+          "[\"user_id\"]",
+          "\"public\".\"User\"",
+          "[\"id\"]",
+          "a",
+          "a"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.SharedHabbit.SharedHabbit_habbit_id_fkey",
+    "label": "Add foreign key \"SharedHabbit_habbit_id_fkey\" on \"SharedHabbit\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "SharedHabbit_habbit_id_fkey",
+        "table": "SharedHabbit"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"SharedHabbit_habbit_id_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "SharedHabbit_habbit_id_fkey",
+          "public",
+          "\"public\".\"SharedHabbit\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "FK \"SharedHabbit_habbit_id_fkey\" on \"SharedHabbit\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"SharedHabbit_habbit_id_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"SharedHabbit\"\nADD CONSTRAINT \"SharedHabbit_habbit_id_fkey\"\nFOREIGN KEY (\"habbit_id\")\nREFERENCES \"public\".\"Habbit\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"SharedHabbit_habbit_id_fkey\" exists with the planned columns, referenced table and actions",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3) AND \"c\".\"contype\" = $4 AND (SELECT coalesce(jsonb_agg(key_attribute.attname ORDER BY key_column.position), '[]'::jsonb) FROM unnest(\"c\".\"conkey\"::int2[]) WITH ORDINALITY AS key_column(attnum, position) JOIN pg_attribute key_attribute ON key_attribute.attrelid = \"c\".\"conrelid\" AND key_attribute.attnum = key_column.attnum) = ($5)::jsonb AND \"c\".\"confrelid\" = to_regclass($6) AND (SELECT coalesce(jsonb_agg(key_attribute.attname ORDER BY key_column.position), '[]'::jsonb) FROM unnest(\"c\".\"confkey\"::int2[]) WITH ORDINALITY AS key_column(attnum, position) JOIN pg_attribute key_attribute ON key_attribute.attrelid = \"c\".\"confrelid\" AND key_attribute.attnum = key_column.attnum) = ($7)::jsonb AND \"c\".\"confdeltype\" = $8 AND \"c\".\"confupdtype\" = $9)) AS \"result\"",
+        "params": [
+          "SharedHabbit_habbit_id_fkey",
+          "public",
+          "\"public\".\"SharedHabbit\"",
+          "f",
+          "[\"habbit_id\"]",
+          "\"public\".\"Habbit\"",
+          "[\"id\"]",
+          "a",
+          "a"
+        ]
+      }
+    ]
+  }
+]

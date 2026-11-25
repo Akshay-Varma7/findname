@@ -3,6 +3,8 @@ import { BrowserRouter , Routes , Route } from "react-router-dom";
 import { useState } from "react";
 import { Context } from "./Context.jsx";
 import HabbitLayout from './HabbitLayout.jsx';
+import Signup from "./Signup.jsx";
+
 function App() {
   console.log("!st");//yes and twice
   //
@@ -19,10 +21,11 @@ function App() {
       <Context.Provider value={value}>
         <Routes>
           <Route path="/" element={<HabbitLayout/>} />
+          <Route path="/signup" element={<Signup/>} />
         </Routes>
       </Context.Provider>
     </BrowserRouter>
   )
 }
 
-export default App
+export default App;

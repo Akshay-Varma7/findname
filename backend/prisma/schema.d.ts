@@ -23,7 +23,7 @@ import type {
 } from '@prisma/orm-postgres/contract/types';
 
 export type StorageHash =
-  StorageHashBase<'f7677f92644c349b7c8638ec4ca9b6108c4aeebd28d7715c2e1e2289a6a24279'>;
+  StorageHashBase<'3c40770dc17edff8c8504e74c499c157d1cdacda8250a8941dd958eda2ecf9a4'>;
 export type ExecutionHash = ExecutionHashBase<string>;
 export type ProfileHash =
   ProfileHashBase<'3916f444a8a17ad749191acf9e08dad97d1a327b88c2f1d45d12f240296aa8b2'>;
@@ -311,20 +311,33 @@ export namespace Models {
   export type public_Habbit = {
     id: FieldOutputTypes['public']['Habbit']['id'];
     name: FieldOutputTypes['public']['Habbit']['name'];
-    readonly [RelationKeys]?: never;
+    SharedHabbits: public_SharedHabbit[];
+    readonly [RelationKeys]?: 'SharedHabbits';
+  };
+  export type public_SharedHabbit = {
+    create_at: FieldOutputTypes['public']['SharedHabbit']['create_at'];
+    habbit_id: FieldOutputTypes['public']['SharedHabbit']['habbit_id'];
+    id: FieldOutputTypes['public']['SharedHabbit']['id'];
+    url: FieldOutputTypes['public']['SharedHabbit']['url'];
+    user_id: FieldOutputTypes['public']['SharedHabbit']['user_id'];
+    habbit: public_Habbit;
+    user: public_User;
+    readonly [RelationKeys]?: 'habbit' | 'user';
   };
   export type public_User = {
     email: FieldOutputTypes['public']['User']['email'];
     id: FieldOutputTypes['public']['User']['id'];
     name: FieldOutputTypes['public']['User']['name'];
     password: FieldOutputTypes['public']['User']['password'];
-    readonly [RelationKeys]?: never;
+    SharedHabbits: public_SharedHabbit[];
+    readonly [RelationKeys]?: 'SharedHabbits';
   };
 }
 
 export declare const models: {
   public: {
     Habbit: Models.public_Habbit;
+    SharedHabbit: Models.public_SharedHabbit;
     User: Models.public_User;
   };
 };
@@ -370,6 +383,88 @@ type ContractBase = Omit<
               uniques: readonly [];
               indexes: readonly [];
               foreignKeys: readonly [];
+            };
+            readonly SharedHabbit: {
+              columns: {
+                readonly create_at: {
+                  readonly dataType: 'pg/timestamptz';
+                  readonly codecId: 'pg/timestamptz-date@1';
+                  readonly nullable: false;
+                  readonly default: { readonly kind: 'function'; readonly expression: 'now()' };
+                  readonly typeParams: { readonly precision: 3 };
+                  readonly many: false;
+                };
+                readonly habbit_id: {
+                  readonly dataType: 'pg/int4';
+                  readonly codecId: 'pg/int4@1';
+                  readonly nullable: false;
+                  readonly many: false;
+                };
+                readonly id: {
+                  readonly dataType: 'pg/int4';
+                  readonly codecId: 'pg/int4@1';
+                  readonly nullable: false;
+                  readonly default: {
+                    readonly kind: 'function';
+                    readonly expression: 'autoincrement()';
+                  };
+                  readonly many: false;
+                };
+                readonly url: {
+                  readonly dataType: 'pg/text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: false;
+                  readonly many: false;
+                };
+                readonly user_id: {
+                  readonly dataType: 'pg/int4';
+                  readonly codecId: 'pg/int4@1';
+                  readonly nullable: false;
+                  readonly many: false;
+                };
+              };
+              primaryKey: { readonly columns: readonly ['id'] };
+              uniques: readonly [];
+              indexes: readonly [
+                {
+                  readonly name: 'SharedHabbit_habbit_id_idx_05f1169b';
+                  readonly prefix: 'SharedHabbit_habbit_id_idx';
+                  readonly columns: readonly ['habbit_id'];
+                  readonly unique: false;
+                },
+                {
+                  readonly name: 'SharedHabbit_user_id_idx_6c952402';
+                  readonly prefix: 'SharedHabbit_user_id_idx';
+                  readonly columns: readonly ['user_id'];
+                  readonly unique: false;
+                },
+              ];
+              foreignKeys: readonly [
+                {
+                  readonly source: {
+                    readonly namespaceId: 'public' & NamespaceId;
+                    readonly tableName: 'SharedHabbit';
+                    readonly columns: readonly ['user_id'];
+                  };
+                  readonly target: {
+                    readonly namespaceId: 'public' & NamespaceId;
+                    readonly tableName: 'User';
+                    readonly columns: readonly ['id'];
+                  };
+                },
+                {
+                  readonly source: {
+                    readonly namespaceId: 'public' & NamespaceId;
+                    readonly tableName: 'SharedHabbit';
+                    readonly columns: readonly ['habbit_id'];
+                  };
+                  readonly target: {
+                    readonly namespaceId: 'public' & NamespaceId;
+                    readonly tableName: 'Habbit';
+                    readonly columns: readonly ['id'];
+                  };
+                },
+              ];
             };
             readonly User: {
               columns: {
@@ -419,6 +514,10 @@ type ContractBase = Omit<
   readonly targetFamily: 'sql';
   readonly roots: {
     readonly Habbit: { readonly namespace: 'public' & NamespaceId; readonly model: 'Habbit' };
+    readonly SharedHabbit: {
+      readonly namespace: 'public' & NamespaceId;
+      readonly model: 'SharedHabbit';
+    };
     readonly User: { readonly namespace: 'public' & NamespaceId; readonly model: 'User' };
   };
   readonly domain: {
@@ -436,13 +535,87 @@ type ContractBase = Omit<
                 readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
               };
             };
-            readonly relations: Record<string, never>;
+            readonly relations: {
+              readonly SharedHabbits: {
+                readonly to: {
+                  readonly namespace: 'public' & NamespaceId;
+                  readonly model: 'SharedHabbit';
+                };
+                readonly cardinality: '1:N';
+                readonly on: {
+                  readonly localFields: readonly ['id'];
+                  readonly targetFields: readonly ['habbit_id'];
+                };
+              };
+            };
             readonly storage: {
               readonly table: 'Habbit';
               readonly namespaceId: 'public';
               readonly fields: {
                 readonly id: { readonly column: 'id' };
                 readonly name: { readonly column: 'name' };
+              };
+            };
+          };
+          readonly SharedHabbit: {
+            readonly fields: {
+              readonly create_at: {
+                readonly nullable: false;
+                readonly type: {
+                  readonly kind: 'scalar';
+                  readonly codecId: 'pg/timestamptz-date@1';
+                  readonly typeParams: { readonly precision: 3 };
+                };
+              };
+              readonly habbit_id: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/int4@1' };
+              };
+              readonly id: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/int4@1' };
+              };
+              readonly url: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
+              readonly user_id: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/int4@1' };
+              };
+            };
+            readonly relations: {
+              readonly habbit: {
+                readonly to: {
+                  readonly namespace: 'public' & NamespaceId;
+                  readonly model: 'Habbit';
+                };
+                readonly cardinality: 'N:1';
+                readonly nullable: false;
+                readonly on: {
+                  readonly localFields: readonly ['habbit_id'];
+                  readonly targetFields: readonly ['id'];
+                };
+              };
+              readonly user: {
+                readonly to: { readonly namespace: 'public' & NamespaceId; readonly model: 'User' };
+                readonly cardinality: 'N:1';
+                readonly nullable: false;
+                readonly on: {
+                  readonly localFields: readonly ['user_id'];
+                  readonly targetFields: readonly ['id'];
+                };
+              };
+            };
+            readonly storage: {
+              readonly table: 'SharedHabbit';
+              readonly namespaceId: 'public';
+              readonly fields: {
+                readonly create_at: { readonly column: 'create_at' };
+                readonly habbit_id: { readonly column: 'habbit_id' };
+                readonly id: { readonly column: 'id' };
+                readonly url: { readonly column: 'url' };
+                readonly user_id: { readonly column: 'user_id' };
               };
             };
           };
@@ -465,7 +638,19 @@ type ContractBase = Omit<
                 readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
               };
             };
-            readonly relations: Record<string, never>;
+            readonly relations: {
+              readonly SharedHabbits: {
+                readonly to: {
+                  readonly namespace: 'public' & NamespaceId;
+                  readonly model: 'SharedHabbit';
+                };
+                readonly cardinality: '1:N';
+                readonly on: {
+                  readonly localFields: readonly ['id'];
+                  readonly targetFields: readonly ['user_id'];
+                };
+              };
+            };
             readonly storage: {
               readonly table: 'User';
               readonly namespaceId: 'public';

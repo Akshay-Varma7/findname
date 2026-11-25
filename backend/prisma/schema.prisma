@@ -4,9 +4,26 @@ model User {
     name String
     email String @unique
     password String
+
+    //backrelation
+    SharedHabbits SharedHabbit[]
 }
 
 model Habbit {
     id Int @id @default(autoincrement())
     name String
+
+    SharedHabbits SharedHabbit[]
+}
+
+model SharedHabbit {
+    id Int @id @default(autoincrement())
+    url String
+    create_at DateTime @default(now())
+
+    user_id Int 
+    user User @relation(fields: [user_id] ,references: [id])//main***
+
+    habbit_id Int
+    habbit Habbit @relation(fields: [habbit_id],references: [id])
 }

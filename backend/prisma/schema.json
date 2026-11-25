@@ -8,6 +8,10 @@
       "model": "Habbit",
       "namespace": "public"
     },
+    "SharedHabbit": {
+      "model": "SharedHabbit",
+      "namespace": "public"
+    },
     "User": {
       "model": "User",
       "namespace": "public"
@@ -34,7 +38,23 @@
                 }
               }
             },
-            "relations": {},
+            "relations": {
+              "SharedHabbits": {
+                "cardinality": "1:N",
+                "on": {
+                  "localFields": [
+                    "id"
+                  ],
+                  "targetFields": [
+                    "habbit_id"
+                  ]
+                },
+                "to": {
+                  "model": "SharedHabbit",
+                  "namespace": "public"
+                }
+              }
+            },
             "storage": {
               "fields": {
                 "id": {
@@ -46,6 +66,103 @@
               },
               "namespaceId": "public",
               "table": "Habbit"
+            }
+          },
+          "SharedHabbit": {
+            "fields": {
+              "create_at": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/timestamptz-date@1",
+                  "kind": "scalar",
+                  "typeParams": {
+                    "precision": 3
+                  }
+                }
+              },
+              "habbit_id": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/int4@1",
+                  "kind": "scalar"
+                }
+              },
+              "id": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/int4@1",
+                  "kind": "scalar"
+                }
+              },
+              "url": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "user_id": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/int4@1",
+                  "kind": "scalar"
+                }
+              }
+            },
+            "relations": {
+              "habbit": {
+                "cardinality": "N:1",
+                "nullable": false,
+                "on": {
+                  "localFields": [
+                    "habbit_id"
+                  ],
+                  "targetFields": [
+                    "id"
+                  ]
+                },
+                "to": {
+                  "model": "Habbit",
+                  "namespace": "public"
+                }
+              },
+              "user": {
+                "cardinality": "N:1",
+                "nullable": false,
+                "on": {
+                  "localFields": [
+                    "user_id"
+                  ],
+                  "targetFields": [
+                    "id"
+                  ]
+                },
+                "to": {
+                  "model": "User",
+                  "namespace": "public"
+                }
+              }
+            },
+            "storage": {
+              "fields": {
+                "create_at": {
+                  "column": "create_at"
+                },
+                "habbit_id": {
+                  "column": "habbit_id"
+                },
+                "id": {
+                  "column": "id"
+                },
+                "url": {
+                  "column": "url"
+                },
+                "user_id": {
+                  "column": "user_id"
+                }
+              },
+              "namespaceId": "public",
+              "table": "SharedHabbit"
             }
           },
           "User": {
@@ -79,7 +196,23 @@
                 }
               }
             },
-            "relations": {},
+            "relations": {
+              "SharedHabbits": {
+                "cardinality": "1:N",
+                "on": {
+                  "localFields": [
+                    "id"
+                  ],
+                  "targetFields": [
+                    "user_id"
+                  ]
+                },
+                "to": {
+                  "model": "SharedHabbit",
+                  "namespace": "public"
+                }
+              }
+            },
             "storage": {
               "fields": {
                 "email": {
@@ -127,6 +260,110 @@
               },
               "foreignKeys": [],
               "indexes": [],
+              "primaryKey": {
+                "columns": [
+                  "id"
+                ]
+              },
+              "uniques": []
+            },
+            "SharedHabbit": {
+              "columns": {
+                "create_at": {
+                  "codecId": "pg/timestamptz-date@1",
+                  "dataType": "pg/timestamptz",
+                  "default": {
+                    "expression": "now()",
+                    "kind": "function"
+                  },
+                  "nullable": false,
+                  "typeParams": {
+                    "precision": 3
+                  }
+                },
+                "habbit_id": {
+                  "codecId": "pg/int4@1",
+                  "dataType": "pg/int4",
+                  "nullable": false
+                },
+                "id": {
+                  "codecId": "pg/int4@1",
+                  "dataType": "pg/int4",
+                  "default": {
+                    "expression": "autoincrement()",
+                    "kind": "function"
+                  },
+                  "nullable": false
+                },
+                "url": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "nullable": false
+                },
+                "user_id": {
+                  "codecId": "pg/int4@1",
+                  "dataType": "pg/int4",
+                  "nullable": false
+                }
+              },
+              "foreignKeys": [
+                {
+                  "index": {
+                    "name": "SharedHabbit_user_id_idx_6c952402"
+                  },
+                  "source": {
+                    "columns": [
+                      "user_id"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "SharedHabbit"
+                  },
+                  "target": {
+                    "columns": [
+                      "id"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "User"
+                  }
+                },
+                {
+                  "index": {
+                    "name": "SharedHabbit_habbit_id_idx_05f1169b"
+                  },
+                  "source": {
+                    "columns": [
+                      "habbit_id"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "SharedHabbit"
+                  },
+                  "target": {
+                    "columns": [
+                      "id"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "Habbit"
+                  }
+                }
+              ],
+              "indexes": [
+                {
+                  "columns": [
+                    "habbit_id"
+                  ],
+                  "name": "SharedHabbit_habbit_id_idx_05f1169b",
+                  "prefix": "SharedHabbit_habbit_id_idx",
+                  "unique": false
+                },
+                {
+                  "columns": [
+                    "user_id"
+                  ],
+                  "name": "SharedHabbit_user_id_idx_6c952402",
+                  "prefix": "SharedHabbit_user_id_idx",
+                  "unique": false
+                }
+              ],
               "primaryKey": {
                 "columns": [
                   "id"
@@ -182,7 +419,7 @@
         "kind": "postgres-schema"
       }
     },
-    "storageHash": "f7677f92644c349b7c8638ec4ca9b6108c4aeebd28d7715c2e1e2289a6a24279"
+    "storageHash": "3c40770dc17edff8c8504e74c499c157d1cdacda8250a8941dd958eda2ecf9a4"
   },
   "capabilities": {
     "postgres": {

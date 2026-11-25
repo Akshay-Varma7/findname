@@ -2,6 +2,8 @@
 import { useState , useEffect } from "react";
 import { useMainContext } from "./Context";
 
+const backendURL = "http://localhost:8000";
+
 export default function HabbitLayout(){
     const { habbit , setHabbit , habbits , setHabbits} = useMainContext();
     //local state
@@ -12,11 +14,11 @@ export default function HabbitLayout(){
     }
     const createSubmit = async ()=>{ //add spinners + later some pop up to fill
         try{
-            const response = await fetch("http://localhost:8000/habbit",{//from res.json -> application/json
+            const response = await fetch(`${backendURL}/habbit`,{//from res.json -> application/json
                 method: "POST",
                 headers : { 'Content-Type': 'application/json'},
-                body : JSON.stringify({ 'name' : newHabbit })
-            })
+                body : JSON.stringify({ 'name' : newHabbit })//if not address key
+            });
             if(!response.ok){
                 new Error("what is the error?");
             }
@@ -24,7 +26,7 @@ export default function HabbitLayout(){
             setNewHabbit("");
             const fResponse = await response.json();//from bytes?
             setHabbits([...habbits,fResponse]);
-            console.log(fResponse);//
+            console.log(fResponse);//need that 
         }catch(e){
             console.log(e.message);
         }
@@ -33,16 +35,16 @@ export default function HabbitLayout(){
     useEffect(()=>{
         async function getHabbits(){
             try{
-                const response = await fetch("http://localhost:8000/habbits",{//not mandatory
+                const response = await fetch(`${backendURL}/habbits`,{//not mandatory
                     method: "GET",
                     headers : { 'Content-Type': 'application/json'}//no body as of now
-                })
+                });
                 if(!response.ok){
                     new Error("what is the error?");
                 }
 
                 const fResponse = await response.json();//from bytes?
-                setHabbits(fResponse);
+                setHabbits(fResponse);//initial so no need [...,] | new array not .append
                 console.log(fResponse);//
             }catch(e){
                 console.log(e.message);
