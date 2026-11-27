@@ -81,14 +81,29 @@ app.get("/habbits",async (req,res)=>{
 
 app.post("/sharedhabbits",async (req,res)=>{
     try{
-        const { url } = req.body;
+        const { url , userId , habbitId } = req.body;//if param typecast id to Number()
         const data = await db.orm.public.SharedHabbit.create({
-            url: url
+            url: url,
+            user_id: userId,
+            habbit_id: habbitId//if not then m2: (h)=>h.connect({unq identifier})
         });
         res.json(data);
         return
     }catch(e){
         console.log(e.message);//not .getMessage()
+    }
+})
+app.get("/sharedhabbits/:habbitId",async (req,res)=>{
+    try{
+        const { habbitId } = req.params;
+        const data = await db.orm.public.SharedHabbit.where({
+            habbit_id: habbitId
+        }).all();
+        console.log(data);
+        res.json(data);
+        return
+    }catch(e){
+        console.log(e.message);
     }
 })
 app.listen(8000, "0.0.0.0");//binding necessary if hosting -> function?

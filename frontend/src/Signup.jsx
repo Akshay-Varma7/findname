@@ -1,6 +1,5 @@
 import { useState } from "react";
-
-const backendURL = "http://localhost:8000";
+import { backendURL } from "./backend.jsx";
 
 //if no default need {} for import 
 export default function Signup(){
